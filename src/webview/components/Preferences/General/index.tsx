@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { savePreferences } from 'providers/ReduxStore/slices/app';
 import { browseFiles } from 'providers/ReduxStore/slices/collections/actions';
 import StyledWrapper from './StyledWrapper';
+import SettingCheckbox from '../SettingCheckbox';
 import * as Yup from 'yup';
 import toast from 'react-hot-toast';
 import path from 'utils/common/path';
@@ -157,28 +158,19 @@ const General = () => {
     (typeof formik.errors.autoSave === 'string' && formik.errors.autoSave)
     || (formik.errors.autoSave as any)?.interval;
 
-  const renderCheckbox = (id: string, name: string, label: string, description: string, checked: boolean, disabled = false) => (
-    <div className={`setting setting-checkbox ${disabled ? 'disabled' : ''}`}>
-      <input id={id} type="checkbox" name={name} checked={checked} disabled={disabled} onChange={formik.handleChange} className="mousetrap" />
-      <div>
-        <label className="setting-label" htmlFor={id}>{label}</label>
-        <div className="setting-description">{description}</div>
-      </div>
-    </div>
-  );
-
   return (
     <StyledWrapper className="w-full">
       <form className="bruno-form" onSubmit={formik.handleSubmit}>
         <div className="settings-section">
           <div className="section-title">Requests</div>
-          {renderCheckbox(
-            'sslVerification',
-            'sslVerification',
-            'SSL/TLS Certificate Verification',
-            'Verify server certificates when sending HTTPS requests.',
-            formik.values.sslVerification
-          )}
+          <SettingCheckbox
+            id="sslVerification"
+            name="sslVerification"
+            label="SSL/TLS Certificate Verification"
+            description="Verify server certificates when sending HTTPS requests."
+            checked={formik.values.sslVerification}
+            onChange={formik.handleChange}
+          />
           <div className="setting">
             <label className="setting-label" htmlFor="timeout">Request Timeout (ms)</label>
             <div className="setting-description">Maximum time to wait for a response. Use 0 for no timeout.</div>
@@ -205,13 +197,14 @@ const General = () => {
 
         <div className="settings-section">
           <div className="section-title">Certificates</div>
-          {renderCheckbox(
-            'customCaCertificateEnabled',
-            'customCaCertificate.enabled',
-            'Use Custom CA Certificate',
-            'Trust an additional certificate authority, e.g. for internal or self-signed servers.',
-            caEnabled
-          )}
+          <SettingCheckbox
+            id="customCaCertificateEnabled"
+            name="customCaCertificate.enabled"
+            label="Use Custom CA Certificate"
+            description="Trust an additional certificate authority, e.g. for internal or self-signed servers."
+            checked={caEnabled}
+            onChange={formik.handleChange}
+          />
           <div className={`setting setting-nested ${caEnabled ? '' : 'disabled'}`}>
             <div className="setting-control">
               {caFilePath ? (
@@ -234,43 +227,47 @@ const General = () => {
               )}
             </div>
           </div>
-          {renderCheckbox(
-            'keepDefaultCaCertificatesEnabled',
-            'keepDefaultCaCertificates.enabled',
-            'Keep Default CA Certificates',
-            'Continue trusting the system CA certificates alongside the custom one.',
-            formik.values.keepDefaultCaCertificates.enabled,
-            !canKeepDefaultCas
-          )}
+          <SettingCheckbox
+            id="keepDefaultCaCertificatesEnabled"
+            name="keepDefaultCaCertificates.enabled"
+            label="Keep Default CA Certificates"
+            description="Continue trusting the system CA certificates alongside the custom one."
+            checked={formik.values.keepDefaultCaCertificates.enabled}
+            disabled={!canKeepDefaultCas}
+            onChange={formik.handleChange}
+          />
         </div>
 
         <div className="settings-section">
           <div className="section-title">Cookies</div>
-          {renderCheckbox(
-            'storeCookies',
-            'storeCookies',
-            'Store Cookies Automatically',
-            'Save cookies received in responses.',
-            formik.values.storeCookies
-          )}
-          {renderCheckbox(
-            'sendCookies',
-            'sendCookies',
-            'Send Cookies Automatically',
-            'Attach stored cookies to matching requests.',
-            formik.values.sendCookies
-          )}
+          <SettingCheckbox
+            id="storeCookies"
+            name="storeCookies"
+            label="Store Cookies Automatically"
+            description="Save cookies received in responses."
+            checked={formik.values.storeCookies}
+            onChange={formik.handleChange}
+          />
+          <SettingCheckbox
+            id="sendCookies"
+            name="sendCookies"
+            label="Send Cookies Automatically"
+            description="Attach stored cookies to matching requests."
+            checked={formik.values.sendCookies}
+            onChange={formik.handleChange}
+          />
         </div>
 
         <div className="settings-section">
           <div className="section-title">Auto Save</div>
-          {renderCheckbox(
-            'autoSaveEnabled',
-            'autoSave.enabled',
-            'Enable Auto Save',
-            'Save request changes automatically after you stop editing.',
-            formik.values.autoSave.enabled
-          )}
+          <SettingCheckbox
+            id="autoSaveEnabled"
+            name="autoSave.enabled"
+            label="Enable Auto Save"
+            description="Save request changes automatically after you stop editing."
+            checked={formik.values.autoSave.enabled}
+            onChange={formik.handleChange}
+          />
           <div className={`setting setting-nested ${formik.values.autoSave.enabled ? '' : 'disabled'}`}>
             <label className="setting-label" htmlFor="autoSaveInterval">Save Delay (ms)</label>
             <div className="setting-description">How long to wait after the last change before saving.</div>
